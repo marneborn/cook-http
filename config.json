@@ -1,0 +1,21 @@
+{
+  "denon"           : {
+    "address" : "10.0.0.104",
+    "port"    : 23
+  },
+  "localPort"       : 12310,
+  "localHerokuPort" : 5000,
+  "simpleClient" : {
+    "host" : "127.0.0.1",
+    "port" : 12313
+  },
+  "homeClient" : {
+    "exthost" : "98.234.105.202",
+    "host"    : "127.0.0.1",
+    "port"    : 12312
+  },
+  "server" : {
+    "host" : "127.0.0.1",
+    "port" : 12311
+  }
+}
