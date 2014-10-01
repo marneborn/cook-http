@@ -1,7 +1,5 @@
 "use strict"
 
-"use strict";
-
 let mongodb  = require('mongodb');
 let fs       = require('fs');
 let Q        = require('q');
@@ -15,13 +13,13 @@ var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 +'/'+config.mongoLab.name;
 
 //---------------------------------------------------------------------------
-module.exports.get = function ( lookup ) {
+module.exports.get = function ( id ) {
 
 	if ( lookup == null )
 		return Q.reject(R.NOLOOKUP);
 
 	let defer   = Q.defer();
-	return getCursor ( config.mongoLab.recipes, { url : lookup } )
+	return getCursor ( config.mongoLab.recipes, { _id : id } )
 	.then( checkCounts   )
 	.then( getNextObject );
 };
@@ -67,8 +65,13 @@ function getNextObject ( cursor ) {
 	let defer = Q.defer();
 
 	cursor.nextObject(function (err, item) {
-		if ( err ) { defer.reject(err);   }		
-		else       { defer.resolve(item); }		
+		if ( err ) {
+			defer.reject(err);
+			return;
+		}
+		console.log(">> "+item._id);
+		item.url = item._id;
+		defer.resolve(item);	
 	});
 
 	return defer.promise;

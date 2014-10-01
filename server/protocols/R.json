@@ -1,7 +1,0 @@
-{
-    "NOK"  : 0,
-    "OK"   : 1,
-    "WRONG_PROTOCOL" : 2,
-    "UNSUPPORTED" : 3,
-    "NO_METHOD" : 4
-}

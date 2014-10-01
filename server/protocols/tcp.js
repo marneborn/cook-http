@@ -3,13 +3,12 @@
 let Q = require('q');
 let Packetizer = require('packetize-string');
 let net        = require('net');
-let R          = require('./R.json');
-const THIS_PROTOCOL = "tcp";
+let R          = require('../../common/loadR');
 
 //---------------------------------------------------------------------------
 module.exports.getFn = function ( recipe ) {
 
-	if ( recipe.protocol !== THIS_PROTOCOL )
+	if ( recipe.protocol !== R.PROTOCOL.TCP )
 		return null;
 
 	for (let i=0; i<methods.length; i++) {
@@ -22,21 +21,6 @@ module.exports.getFn = function ( recipe ) {
 };
 
 //---------------------------------------------------------------------------
-module.exports.respond = function ( res ) {
-
-	if ( recipe.protocol.toLowerCase() !== THIS_PROTOCOL )
-		return Q.reject(R.WRONG_PROTOCOL);
-
-	for (let i=0; i<methods.length; i++) {
-
-		if ( methods[i].name === recipe.method )
-			return methods[i].fn(recipe);
-
-	}
-	return Q.reject(R.NO_METHOD);
-};
-
-//---------------------------------------------------------------------------
 let methods   = [];
 module.exports.registerMethod = registerMethod;
 
@@ -45,7 +29,7 @@ function registerMethod ( name, fn ) {
 };
 
 //---------------------------------------------------------------------------
-registerMethod('send-and-forget', function ( recipe ) {
+registerMethod(R.TCP.SEND_AND_FORGET, function ( recipe ) {
 	console.log("Sending a message to: "+recipe.host+":"+recipe.port);
 	net.Socket()
 	.connect( recipe.port, recipe.host, function () {
@@ -61,7 +45,7 @@ registerMethod('send-and-forget', function ( recipe ) {
 });
 
 //---------------------------------------------------------------------------
-registerMethod('send-response', function ( recipe, logArray ) {
+registerMethod(R.TCP.PACKETIZE_STRING, function ( recipe, logArray ) {
 	console.log("Sending a message to: "+recipe.host+":"+recipe.port);
 	let defer  = Q.defer();
 
@@ -103,7 +87,7 @@ registerMethod('send-response', function ( recipe, logArray ) {
 					
 				if ( timedOut ) 
 					return defer.reject(timeOutMsg);
-				
+				console.log("got back: "+msg);
 				defer.resolve(msg);
 			}
 			// reject from .receive will fall through

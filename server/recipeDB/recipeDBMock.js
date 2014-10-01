@@ -4,15 +4,19 @@ let fs       = require('fs');
 let Q        = require('q');
 let config   = require('../../config.json');
 let deepcopy = require('deepcopy');
+let R        = require('../../common/loadR');
 
-let R = module.exports = require("./R.json");
+JSON.minify = JSON.minify || require("node-json-minify");
 
+// use eval so that R's are visible...
 let recipes;
-eval('recipes = '+fs.readFileSync(__dirname+'/mock.json')+';');
+eval('recipes = '+JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
 
 let localDB = {};
+let nextID  = 1;
 for ( var i=0; i<recipes.length; i++ ) {
-	localDB[recipes[i].url] = recipes[i];
+	recipes[i]._id = 'mock'+(nextID++);
+	localDB[recipes[i]._id] = recipes[i];
 }
 
 //---------------------------------------------------------------------------

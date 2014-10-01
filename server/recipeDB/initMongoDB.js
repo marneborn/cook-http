@@ -6,22 +6,27 @@ let Q        = require('q');
 let config   = require('../../config.json');
 let deepcopy = require('deepcopy');
 
-let R = module.exports = require("./R.json");
+JSON.minify = JSON.minify || require("node-json-minify");
+
+let R = module.exports = JSON.parse(JSON.minify(fs.readFileSync(__dirname+'/R.json', 'utf8')));
+//let R = module.exports = require("./R.json");
 
 var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 	+'@'+config.mongoLab.host+':'+config.mongoLab.port
 	+'/'+config.mongoLab.name;
 
-let seedData;
-eval('seedData = '+fs.readFileSync(__dirname+'/mock.json')+';');
+// need to eval since there are R. constants in the mock.json
+let recipes;
+eval('recipes = '+JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
+//let recipes = JSON.parse(JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
 
 mongodb.MongoClient.connect(uri, function(err, db) {
 
 	if(err) throw err;
 
-	var recipes = db.collection(config.mongoLab.recipes);
+	var recipeColl = db.collection(config.mongoLab.recipes);
 
-	recipes.insert(seedData, function(err, result) {
+	recipeColl.insert(recipes, function(err, result) {
 
 		if(err) throw err;
 		

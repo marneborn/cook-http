@@ -1,11 +1,10 @@
 "use strict";
 
 let util = require('util');
-module.exports = require('./protocols/R.json');
+let R    = require("../common/loadR");
 
-let protocols = {
-		tcp : require('./protocols/tcp.js')
-};
+let protocols = {};
+protocols[R.PROTOCOL.TCP] = require('./protocols/tcp.js');
 
 module.exports.getCookFunction = function ( recipe ) {
 

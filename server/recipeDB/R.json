@@ -1,8 +1,0 @@
-{
-	"NOK"      :  0,
-	"OK"       :  1,
-	"NORECIPE" :  2,
-	"NOLOOKUP" :  3,
-	"ATTACH"   :  4,
-	"HTML"     :  5
-}

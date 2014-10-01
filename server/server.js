@@ -8,16 +8,10 @@ let querystring = require('querystring');
 let Q           = require('q');
 
 let config     = require('../config.json');
-let R          = require('../common/R.json');
+let R          = require('../common/loadR.js');
 let protocols  = require('./protocols.js');
-//let recipeDB   = require('./recipeDB/recipeDBMock.js');
-let recipeDB   = require('./recipeDB/recipeDBMongo.js');
-
-const ROOT_DIR = path.resolve(__dirname, "..");
-
-//let utils  = require('../common/utils');
-
-
+let recipeDB   = require('./recipeDB/recipeDBMock.js');
+//let recipeDB   = require('./recipeDB/recipeDBMongo.js');
 
 console.log("Starting...");
 
@@ -27,14 +21,11 @@ var server = app.listen(port, function () {
 	console.log('Listening on port %d', server.address().port);
 });
 
-
 app
 .use( logRequests )
-.use( express.static( path.resolve(ROOT_DIR, 'app') ) )
+.use( express.static( path.resolve(R.ROOT_DIR, 'app') ) )
 .use( cookRequest )
-.use( logRequests )
 .use( send404 )
-.use( logRequests )
 .use( function ( err, req, res, next ) {
 	console.error("Error: "+err);
 });
@@ -52,7 +43,7 @@ function send404 (req, res, next) {
 
 	// respond with html page
 	if (req.accepts('html')) {
-		res.sendFile( path.resolve(ROOT_DIR, 'app', '404.html') );
+		res.sendFile( path.resolve(R.ROOT_DIR, 'app', '404.html') );
 		return;
 	}
 
@@ -75,6 +66,7 @@ function cookRequest ( req, res, next ) {
 			request   : req,
 			recipe    : null,
 			url       : req.url,
+			response  : null,
 			log       : [
 			             ["Requester", req.connection.remoteAddress+":"+req.connection.remotePort],
 			             ["URL"      , req.url],
@@ -87,7 +79,7 @@ function cookRequest ( req, res, next ) {
 			function ( recipe ) {
 				return followRecipe(res, recipe)
 				.then(
-						function (        ) {
+						function () {
 							return respondToRequest(res)
 							.catch(
 									function ( reason ) { return respondWith404(res, reason); }
@@ -124,39 +116,32 @@ function followRecipe ( res, recipe ) {
 
 	let cookFn = protocols.getCookFunction(recipe);
 
-	if ( cookFn ) {
-		return cookFn( recipe )
-		.then(
-				function (msg) {
-					if ( !msg ) return;
-					if ( typeof(msg) === 'array' ) {
-						for (var i=0; i<msg.length; i++) {
-							res.cook.log.push(["Response", msg[i]]);
-						}
-					}
-					else {
-						res.cook.log.push(["Response", msg]);
-					}
-					return Q(R.OK);
-				}
-		);
+	if ( !cookFn ) {
+		res.cook.log.push(["Unsupported protocol", recipe.protocol]);
+		return Q.reject(protocols.UNSUPPORTED);
 	}
 	
-	res.cook.log.push(["Unsupported protocol", recipe.protocol]);
-	return Q.reject(protocols.UNSUPPORTED);
+	return cookFn( recipe )
+	.then(
+			function (msg) {
+				if ( !msg ) return Q(R.OK);
+				res.cook.response = msg;
+				return Q(R.OK);
+			}
+	);
 }
 
 //---------------------------------------------------------------------------
 function respondToRequest ( res ) {
 
-	if ( res.recipe.response === recipeDB.ATTACH )
+	if ( res.recipe.response === R.RESPONSE.ATTACH )
 		return respondWithAttach ( res );
 
-	if ( res.recipe.response === recipeDB.HTML )
+	if ( res.recipe.response === R.RESPONSE.HTML )
 		return respondWithHtml( res );
 
 	res.cook.log.push(["Unsupported response", res.recipe.response]);
-	return Q.reject(protocols.UNSUPPORTED);
+	return Q.reject(R.UNSUPPORTED);
 }
 
 //---------------------------------------------------------------------------
@@ -169,12 +154,26 @@ function respondWithAttach ( res ) {
 		'Content-Disposition' : 'attachment; filename="'+filename+'"'
 	});
 
-	res.end(
+	res.write(
 			res.cook.log
 			.map(function (arr) { return arr.join(' : '); })
 			.join("\n")
 	);
+	res.write("\n");
 
+	if ( typeof(res.cook.response) === 'array' ) {
+		res.write(
+				res.cook.response
+				.map(function (msg) { return ["Response", msg].join(' : '); })
+				.join("\n")
+		);
+		res.write("\n");
+	}
+	else if (res.cook.response) {
+		res.write("Response : "+res.cook.response.toString()+"\n");
+	}
+
+	res.end();
 	return Q.resolve(R.OK);
 }
 
@@ -192,6 +191,15 @@ function respondWithHtml ( res ) {
 	for ( var i=0; i<res.cook.log.length; i++ ) {
 		res.write("<tr><td>"+res.cook.log[i][0]+"</td>"+"<td>"+res.cook.log[i][1]+"</td></tr>")
 	}
+	if ( typeof(res.cook.response) === 'array' ) {
+		for ( var i=0; i<res.cook.response.length; i++ ) {
+			res.write("<tr><td>Response</td>"+"<td>"+res.cook.response[i].toString()+"</td></tr>")
+		}
+	}
+	else {
+		res.write("<tr><td>Response</td>"+"<td>"+res.cook.response.toString()+"</td></tr>")
+	}
+
 	res.write("</table>");
 	res.write("</body></html>");
 	res.end();
