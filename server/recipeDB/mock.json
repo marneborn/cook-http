@@ -1,0 +1,29 @@
+[
+    {
+        'url'      : 'dummyid0',
+        'protocol' : 'tcp',
+        'method'   : 'send-and-forget',
+        'host'     : config.simpleClient.host,
+        'port'     : config.simpleClient.port,
+        'message'  : 'muteoff',
+        'response' : R.ATTACH
+    },
+    {
+        'url'      : 'dummyid1',
+        'protocol' : 'tcp',
+        'method'   : 'send-response',
+        'host'     : config.homeClient.host  ,
+        'port'     : config.homeClient.port  ,
+        'message'  : 'muteoff',
+        'response' : R.HTML
+    },
+    {
+        'url'      : 'dummyid2',
+        'protocol' : 'tcp',
+        'method'   : 'send-response',
+        'host'     : config.homeClient.host  ,
+        'port'     : config.homeClient.port  ,
+        'message'  : 'muteon' ,
+        response   : R.ATTACH
+    }
+]

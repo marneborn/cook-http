@@ -4,6 +4,7 @@
   "dependencies": {
     "deepcopy": "^0.3.3",
     "express": "^4.9.5",
+    "mongodb": "^1.4.17",
     "packetize-string": "../packetize-string",
     "q": "^1.0.1"
   },
