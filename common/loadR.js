@@ -32,7 +32,7 @@ module.exports = {
 		// cook error codes
 		"COOK" : {
 			"NORECIPE"    :  500,
-			"NOLOOKUP"    :  501
+			"NOID"        :  501
 		},
 
 		// error codes related to parsing the recipe

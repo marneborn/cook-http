@@ -10,8 +10,8 @@ let Q           = require('q');
 let config     = require('../config.json');
 let R          = require('../common/loadR.js');
 let protocols  = require('./protocols.js');
-let recipeDB   = require('./recipeDB/recipeDBMock.js');
-//let recipeDB   = require('./recipeDB/recipeDBMongo.js');
+//let recipeDB   = require('./recipeDB/recipeDBMock.js');
+let recipeDB   = require('./recipeDB/recipeDBMongo.js');
 
 console.log("Starting...");
 

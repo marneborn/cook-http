@@ -3,36 +3,76 @@
 let mongodb  = require('mongodb');
 let fs       = require('fs');
 let Q        = require('q');
-let config   = require('../../config.json');
 let deepcopy = require('deepcopy');
-
-JSON.minify = JSON.minify || require("node-json-minify");
-
-let R = module.exports = JSON.parse(JSON.minify(fs.readFileSync(__dirname+'/R.json', 'utf8')));
-//let R = module.exports = require("./R.json");
+let config   = require('../../config.json');
+let R        = require('../../common/loadR');
 
 var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
-	+'@'+config.mongoLab.host+':'+config.mongoLab.port
-	+'/'+config.mongoLab.name;
++'@'+config.mongoLab.host+':'+config.mongoLab.port
++'/'+config.mongoLab.name;
 
-// need to eval since there are R. constants in the mock.json
+//use eval so that R's are visible...
+JSON.minify = JSON.minify || require("node-json-minify");
 let recipes;
 eval('recipes = '+JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
-//let recipes = JSON.parse(JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
 
-mongodb.MongoClient.connect(uri, function(err, db) {
+var MongoClient = require('mongodb').MongoClient;
 
-	if(err) throw err;
+mongodb.MongoClient.connect(uri, function (err, db) {
+	if ( err ) throw new Error(err);
 
-	var recipeColl = db.collection(config.mongoLab.recipes);
+	db.dropCollection(config.mongoLab.recipes, function (err,res) {
+		// keep going whether or not the drop collection passed.
+		//if ( err ) throw new Error(err);
 
-	recipeColl.insert(recipes, function(err, result) {
+		db.createCollection(config.mongoLab.recipes, function (err, collection) {
+			if ( err ) throw new Error(err);
 
-		if(err) throw err;
-		
-		db.close(function (err) {
-			if(err) throw err;
+			collection.insert(recipes, function (err, result) {
+				if ( err ) throw new Error(err);
+				db.close();
+			});
 		});
-
 	});
 });
+
+/*
+Q.nfcall(mongodb.MongoClient.connect, uri)
+.then( dropCollection )
+.then( createAndInsert )
+.then( closeDB )
+.catch(
+		function ( reason ) {
+			console.log("Connect error: "+reason);
+			throw new Error(reason)
+		}
+);
+
+function dropCollection ( db ) {
+	// drop the recipe collection then pass on the db regardless of pass/fail
+	var defer = Q.defer();
+	db.dropCollection(config.mongoLab.recipes, function (err,res) {
+		defer.resolve(db);
+	});
+	return defer.promise;
+}
+
+function createAndInsert ( db ) {
+	var defer = Q.defer();
+	db.createCollection(config.mongoLab.recipes, function (err, collection) {
+		if ( err )
+			throw new Error(err);
+		collection.insert(recipes, function (err, result) {
+			if ( err ) { defer.reject(err); }
+			else       { defer.resolve(db); }
+		});
+	});
+	return defer.promise;
+}
+
+function closeDB ( db ) {
+	db.close();
+	return Q(true);
+}
+
+*/

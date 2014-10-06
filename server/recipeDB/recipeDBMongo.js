@@ -3,10 +3,9 @@
 let mongodb  = require('mongodb');
 let fs       = require('fs');
 let Q        = require('q');
-let config   = require('../../config.json');
 let deepcopy = require('deepcopy');
-
-let R = module.exports = require("./R.json");
+let config   = require('../../config.json');
+let R        = require('../../common/loadR');
 
 var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 +'@'+config.mongoLab.host+':'+config.mongoLab.port
@@ -15,13 +14,14 @@ var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 //---------------------------------------------------------------------------
 module.exports.get = function ( id ) {
 
-	if ( lookup == null )
-		return Q.reject(R.NOLOOKUP);
+	if ( id == null )
+		return Q.reject(R.NOID);
 
 	let defer   = Q.defer();
 	return getCursor ( config.mongoLab.recipes, { _id : id } )
 	.then( checkCounts   )
-	.then( getNextObject );
+	.then( getNextObject )
+	.catch( reportError );
 };
 
 //---------------------------------------------------------------------------
@@ -61,7 +61,7 @@ function checkCounts ( cursor ) {
 
 //---------------------------------------------------------------------------
 function getNextObject ( cursor ) {
-
+	
 	let defer = Q.defer();
 
 	cursor.nextObject(function (err, item) {
@@ -69,10 +69,14 @@ function getNextObject ( cursor ) {
 			defer.reject(err);
 			return;
 		}
-		console.log(">> "+item._id);
 		item.url = item._id;
 		defer.resolve(item);	
 	});
 
 	return defer.promise;
+}
+
+//---------------------------------------------------------------------------
+function reportError ( reason ) {
+	console.log("Error: "+reason);
 }

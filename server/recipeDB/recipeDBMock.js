@@ -6,9 +6,8 @@ let config   = require('../../config.json');
 let deepcopy = require('deepcopy');
 let R        = require('../../common/loadR');
 
-JSON.minify = JSON.minify || require("node-json-minify");
-
 // use eval so that R's are visible...
+JSON.minify = JSON.minify || require("node-json-minify");
 let recipes;
 eval('recipes = '+JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
 
@@ -34,7 +33,7 @@ function generateUUID() {
 module.exports.get = function ( lookup ) {
 
 	if ( lookup == null )
-		return Q.reject(R.NOLOOKUP);
+		return Q.reject(R.NOID);
 
 	if ( localDB[lookup] === undefined )
 		return Q.reject(R.NORECIPE);
