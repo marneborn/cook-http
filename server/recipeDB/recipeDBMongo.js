@@ -1,11 +1,13 @@
-"use strict"
+"use strict";
 
 let mongodb  = require('mongodb');
+let path     = require('path');
+let extend   = require('extend');
 let fs       = require('fs');
 let Q        = require('q');
 let deepcopy = require('deepcopy');
-let config   = require('../../config.json');
 let R        = require('../../common/loadR');
+let config   = require('../../common/config.js');
 
 var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 +'@'+config.mongoLab.host+':'+config.mongoLab.port
@@ -13,12 +15,11 @@ var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 
 //---------------------------------------------------------------------------
 module.exports.get = function ( id ) {
-
+	console.log("g0> "+id);
 	if ( id == null )
 		return Q.reject(R.NOID);
 
-	let defer   = Q.defer();
-	return getCursor ( config.mongoLab.recipes, { _id : id } )
+	return getCursor ( config.mongoLab.recipes, { _id : mongodb.ObjectID(id) } )
 	.then( checkCounts   )
 	.then( getNextObject )
 	.catch( reportError );
@@ -26,18 +27,18 @@ module.exports.get = function ( id ) {
 
 //---------------------------------------------------------------------------
 function getCursor ( collection, toFind ) {
-
+	console.log("g1> "+JSON.stringify(toFind));
 	let defer = Q.defer();
-	
+	console.log("g2> "+uri);
 	mongodb.MongoClient.connect(uri, function(err, db) {
-
+		console.log("g3> "+err+","+db);
 		if (err) {
 			defer.reject(err)
 		}
 		else {
 			let dbColl = db.collection( collection );
-			let recipes = dbColl.find(toFind);
-			defer.resolve(recipes);
+			let cursor = dbColl.find(toFind);
+			cursor ? defer.resolve(cursor) : defer.reject(R.NORECIPE);
 		}
 	});
 	
@@ -50,9 +51,10 @@ function checkCounts ( cursor ) {
 	let defer = Q.defer();
 
 	cursor.count(function (err, count) {
+		console.log("g10> "+err+","+count);
 		if ( err              )  { defer.reject (err);          }
-		else if ( count === 0 )  { defer.reject (R.NORECIPE);   }
-		else if ( count > 1   )  { defer.reject (R.NOT_UNIQUE); }
+		else if ( count === 0 )  { defer.reject (R.COOK.NORECIPE);   }
+		else if ( count > 1   )  { defer.reject (R.COOK.NOT_UNIQUE); }
 		else                     { defer.resolve(cursor);       }
 	});
 	
@@ -65,6 +67,9 @@ function getNextObject ( cursor ) {
 	let defer = Q.defer();
 
 	cursor.nextObject(function (err, item) {
+		console.log("g20>");
+		console.log("g21> "+JSON.stringify(item));
+
 		if ( err ) {
 			defer.reject(err);
 			return;
@@ -79,4 +84,5 @@ function getNextObject ( cursor ) {
 //---------------------------------------------------------------------------
 function reportError ( reason ) {
 	console.log("Error: "+reason);
+	return Q.reject(reason);
 }

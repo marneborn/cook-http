@@ -1,41 +1,46 @@
 [
  { // mock1
+	 "owner"       : "mikael",
 	 "protocol"    : R.PROTOCOL.TCP,
 	 "method"      : R.TCP.SEND_AND_FORGET,
-	 "host"        : config.simpleClient.host,
-	 "port"        : config.simpleClient.port,
+	 "host"        : config.sendOnlyClient.host,
+	 "port"        : config.sendOnlyClient.port,
 	 "message"     : "muteoff",
 	 "response"    : R.RESPONSE.ATTACH,
 	 "description" : "testing the simple send and forget TCP method, response is an attachment"
  },
  { // mock2
+	 "owner"       : "mikael",
 	 "protocol"    : R.PROTOCOL.TCP,
 	 "method"      : R.TCP.PACKETIZE_STRING,
-	 "host"        : config.homeClient.host  ,
-	 "port"        : config.homeClient.port  ,
+	 "host"        : config.responseClient.host  ,
+	 "port"        : config.responseClient.port  ,
 	 "message"     : "muteoff",
 	 "response"    : R.RESPONSE.HTML,
 	 "description" : "testing the \"send-response(packetize-string)\" TCP method, response is HTML"
  },
  { // mock3
+	 "owner"       : "mikael",
 	 "protocol"    : R.PROTOCOL.TCP,
 	 "method"      : R.TCP.PACKETIZE_STRING,
-	 "host"        : config.homeClient.host  ,
-	 "port"        : config.homeClient.port  ,
+	 "host"        : config.responseClient.host  ,
+	 "port"        : config.responseClient.port  ,
 	 "message"     : "muteon" ,
 	 "response"    : R.RESPONSE.ATTACH,
 	 "description" : "testing the \"send-response(packetize-string)\" TCP method for muteon, response an attachment"
  },
  { // mock4
+	 "owner"       : "mikael",
 	 "protocol"    : R.PROTOCOL.TCP,
 	 "method"      : R.TCP.PACKETIZE_STRING,
-	 "host"        : config.homeClient.host  ,
-	 "port"        : config.homeClient.port  ,
+	 "host"        : config.responseClient.host  ,
+	 "port"        : config.responseClient.port  ,
 	 "message"     : "muteoff" ,
 	 "response"    : R.RESPONSE.ATTACH,
 	 "description" : "testing the \"send-response(packetize-string)\" TCP method for muteoff, response an attachment"
  },
  { // mock5
+	 "owner"       : "mikael",
 	 "protocol"    : R.PROTOCOL.HTTP,
 	 "method"      : "???",
 	 "url"         : "www.google.com",

@@ -1,0 +1,23 @@
+{
+	"logLevel" : "silly",
+	"denon" : {
+		"address" : "10.0.0.104",
+		"port"    : 23
+	},
+	"server" : {
+		"port" : 5000
+	},
+	"sendOnlyClient" : {
+		"host" : "127.0.0.1",
+		"port" : 12313
+	},
+	"responseClient" : {
+		"host" : "127.0.0.1",
+		"port" : 12312
+	},
+	"mongoLab"     : {
+		"mock"     : false,
+		"translateID" : true
+	}
+
+}

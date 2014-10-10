@@ -4,3 +4,4 @@ dist
 .sass-cache
 .metadata*
 bower_components
+config.secret.json

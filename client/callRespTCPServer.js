@@ -1,14 +1,16 @@
-'use strict'
+"use strict";
 
 var EventEmitter = require('events').EventEmitter;
 
 let net        = require('net');
-let config     = require('../config.json');
 let Packetizer = require('packetize-string');
 
-let server = net.createServer();
-server
-.listen(config.homeClient.port, function () {
+//app specific stuff
+var R          = require('../common/loadR.js');
+var config     = require('../common/config.js');
+
+var server = net.createServer()
+.listen(config.responseClient.port, function () {
 	console.log("Listening to: "+this.address().port);
 })
 .on('connection', function ( socket ) { 

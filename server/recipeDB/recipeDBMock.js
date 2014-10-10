@@ -1,10 +1,13 @@
 'use strict';
 
+let path     = require('path');
+let extend   = require('extend');
 let fs       = require('fs');
 let Q        = require('q');
-let config   = require('../../config.json');
 let deepcopy = require('deepcopy');
+var mongodb  = require('mongodb');
 let R        = require('../../common/loadR');
+var config   = require('../../common/config.js');
 
 // use eval so that R's are visible...
 JSON.minify = JSON.minify || require("node-json-minify");
@@ -12,11 +15,12 @@ let recipes;
 eval('recipes = '+JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
 
 let localDB = {};
-let nextID  = 1;
 for ( var i=0; i<recipes.length; i++ ) {
-	recipes[i]._id = 'mock'+(nextID++);
-	localDB[recipes[i]._id] = recipes[i];
+	var tmpID = 'mock'+i.toString();
+	recipes[i]['_id'] = mongodb.ObjectID(Array(1+12-tmpID.length).join("_")+tmpID);
+	localDB[recipes[i]._id.toHexString()] = recipes[i];
 }
+console.log(">>> "+JSON.stringify(localDB, null, 4));
 
 //---------------------------------------------------------------------------
 function generateUUID() {

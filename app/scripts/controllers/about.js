@@ -2,10 +2,10 @@
 
 /**
  * @ngdoc function
- * @name cookHttpApp.controller:AboutCtrl
+ * @name tmpyoApp.controller:AboutCtrl
  * @description
  * # AboutCtrl
- * Controller of the cookHttpApp
+ * Controller of the tmpyoApp
  */
 angular.module('cookHttpApp')
   .controller('AboutCtrl', function ($scope) {

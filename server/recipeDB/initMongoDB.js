@@ -1,11 +1,13 @@
 "use strict";
 
-let mongodb  = require('mongodb');
-let fs       = require('fs');
-let Q        = require('q');
-let deepcopy = require('deepcopy');
-let config   = require('../../config.json');
-let R        = require('../../common/loadR');
+let mongodb     = require('mongodb');
+let path        = require('path');
+let fs          = require('fs');
+let Q           = require('q');
+let deepcopy    = require('deepcopy');
+var extend      = require('extend');
+let R           = require('../../common/loadR');
+var config      = require('../../common/config.js');
 
 var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 +'@'+config.mongoLab.host+':'+config.mongoLab.port
@@ -14,9 +16,13 @@ var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 //use eval so that R's are visible...
 JSON.minify = JSON.minify || require("node-json-minify");
 let recipes;
-eval('recipes = '+JSON.minify(fs.readFileSync(__dirname+'/mock.json', 'utf8')));
+eval('recipes = '+JSON.minify(fs.readFileSync(path.resolve(__dirname, 'mock.json'), 'utf8')));
 
-var MongoClient = require('mongodb').MongoClient;
+// set the ObjectIDs to be the mock names
+for (var i=0; i<recipes.length; i++) {
+	var tmpID = 'mock'+i.toString();
+	recipes[i]['_id'] = mongodb.ObjectID(Array(1+12-tmpID.length).join("_")+tmpID);
+}
 
 mongodb.MongoClient.connect(uri, function (err, db) {
 	if ( err ) throw new Error(err);

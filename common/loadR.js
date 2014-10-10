@@ -1,7 +1,5 @@
 "use strict";
 
-let path = require("path");
-
 module.exports = {
 		
 		// Generic codes
@@ -32,7 +30,8 @@ module.exports = {
 		// cook error codes
 		"COOK" : {
 			"NORECIPE"    :  500,
-			"NOID"        :  501
+			"NOT_UNIQUE"  :  501,
+			"NOID"        :  502
 		},
 
 		// error codes related to parsing the recipe
@@ -43,4 +42,3 @@ module.exports = {
 
 };
 
-module.exports.ROOT_DIR = path.resolve(__dirname, "..");

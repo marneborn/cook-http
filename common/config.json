@@ -1,0 +1,19 @@
+{
+	"session-secret" : "put in secret.config.json",
+	"cookieSecret"   : "put in secret.config.json",
+	"logLevel"       : "info",
+	"server" : {
+		"port" : null
+	},
+	"mongoLab"     : {
+		"user"     : "put in secret.config.json",
+		"password" : "put in secret.config.json",
+		"host"     : "ds041150.mongolab.com",
+		"port"     : 41150,
+		"name"     : "cook-http",
+		"recipes"  : "recipes",
+		"mock"     : false,
+		"translateID" : false
+	}
+
+}

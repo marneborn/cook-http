@@ -2,10 +2,10 @@
 
 /**
  * @ngdoc function
- * @name cookHttpApp.controller:MainCtrl
+ * @name tmpyoApp.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the cookHttpApp
+ * Controller of the tmpyoApp
  */
 angular.module('cookHttpApp')
   .controller('MainCtrl', function ($scope) {
