@@ -27,11 +27,13 @@ var app = angular
 })
 
 .config(function (googlePlusLoginProvider) {
-	googlePlusLoginProvider.clientid = '786732306424-vd674755dnughpmlo0slkve4o48ejb71.apps.googleusercontent.com';
-//	googlePlusLoginProvider.cookiepolicy = "config";
+	googlePlusLoginProvider.clientid    = '786732306424-vd674755dnughpmlo0slkve4o48ejb71.apps.googleusercontent.com';
 })
 
 angular.module('cookHttpApp')
+.controller('loginController', function ($scope) {
+	
+})
 .controller('SignInController', function ($scope, $document, googlePlusLogin) {
 	// This flag we use to show or hide the button in our HTML.
 	$scope.signedIn = false;

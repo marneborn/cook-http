@@ -5,3 +5,4 @@ dist
 .metadata*
 bower_components
 config.secret.json
+ssl

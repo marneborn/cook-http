@@ -27,7 +27,7 @@ log.level        = config.logLevel;
 var app    = express()
 .use( function ( req, res, next ) { next(); })
 .set('http-port', Number(config.server.port || process.env.PORT) )
-.use( favicon(path.resolve(config.ROOT_DIR, 'app', 'favicon.ico') ) )
+.use( favicon(path.resolve(config.ROOT_DIR, 'web-app', 'favicon.ico') ) )
 .use( logRequests )
 .use( logger('dev') )
 .use( bodyParser.json() )
@@ -122,7 +122,7 @@ app
 // routing
 log.info("Setting up routes");
 app
-.use( express.static( path.resolve(config.ROOT_DIR, 'app') ) )
+.use( express.static( path.resolve(config.ROOT_DIR, 'web-app') ) )
 //.use( express.static( path.resolve(config.ROOT_DIR, 'app/bower_components') ) )
 //.use( require('./cookRequest') )
 .use( send404 )

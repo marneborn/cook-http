@@ -15,19 +15,6 @@
 <link rel="stylesheet" href="styles/main.css">
 <!-- endbuild -->
 
-<!-- 
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script');
-    po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://plus.google.com/js/client:plusone.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(po, s);
-  })();
-  </script>
-  
-  -->
-  
 </head>
 <body ng-app="cookHttpApp">
   <!--[if lt IE 7]>
@@ -44,23 +31,7 @@
   <!-- Define controller for body. In this example we use only one controller for the scope of entire body. -->
   <!-- Place a span that is going to act as a container for button rendering through script code. -->
   <div ng-controller="OtherController"></div>
-  <!-- Don't forget to place the script that does the asynchronous loading of Google+ JavaScript API.
-             Because it is loaded asynchronously, it might take some time to load. 
-             Place some loading notification, so user won't get confused. 
-             You can use ng-show and ng-hide to show or hide your notification and accomplish best user experience. -->
-<!--
-  <script>
-  (function() {
-				var po = document.createElement('script');
-				po.type = 'text/javascript';
-				po.async = true;
-				po.src = 'https://apis.google.com/js/client:plusone.js';
-				var s = document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(po, s);
-			})();
 
-		</script>
--->
   <!-- Second script needed for accessing Google API (gapi.*) . It's usage will be described in controller. -->
   <script
     src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>

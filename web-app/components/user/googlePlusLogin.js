@@ -39,6 +39,7 @@
 	                        { name : 'height'        , from : 'element'   , required : false, possible : ['short', 'standard', 'tall' ] },
 	                        { name : 'theme'         , from : 'element'   , required : false, possible : ['light', 'dark' ] },
 	                        { name : 'width'         , from : 'element'   , required : false, possible : ['iconOnly', 'standard', 'wide'] },
+	                        { name : 'redirecturi'   , from : 'controller', required : false, possible : [null, 'postmessage'], default : null }
 	                        ];
 
 	//---------------------------------------------------------------------------
