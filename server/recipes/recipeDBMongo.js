@@ -14,15 +14,21 @@ var uri = 'mongodb://'+config.mongoLab.user+':'+config.mongoLab.password
 +'/'+config.mongoLab.name;
 
 //---------------------------------------------------------------------------
-module.exports.get = function ( id ) {
-	console.log("g0> "+id);
-	if ( id == null )
-		return Q.reject(R.NOID);
+module.exports = {
+		
+		get : function ( id ) {
+			if ( id == null )
+				return Q.reject(R.NOID);
 
-	return getCursor ( config.mongoLab.recipes, { _id : mongodb.ObjectID(id) } )
-	.then( checkCounts   )
-	.then( getNextObject )
-	.catch( reportError );
+			return getCursor (
+					config.mongoLab.recipes,
+					{ _id : mongodb.ObjectID(id) }
+			)
+			.then( checkCounts   )
+			.then( getNextObject )
+			.catch( reportError );
+		}
+
 };
 
 //---------------------------------------------------------------------------

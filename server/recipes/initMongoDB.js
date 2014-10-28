@@ -43,6 +43,8 @@ mongodb.MongoClient.connect(uri, function (err, db) {
 });
 
 /*
+ * nfcall doesn't work without binding....
+ * 
 Q.nfcall(mongodb.MongoClient.connect, uri)
 .then( dropCollection )
 .then( createAndInsert )

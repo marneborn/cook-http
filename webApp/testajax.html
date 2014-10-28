@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<title></title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+  <script type="text/javascript" src="https://rawgit.com/marneborn/angular-coverup/master/angular-coverup.js"></script>
+  <script>
+    angular.module('myApp', [ 'mngCoverup' ])
+    .controller('myCtrl',
+		function($q, $scope, $http) {
+
+                    $scope.wallTime  = 0;
+		    $scope.runTime   = 0;
+		    $scope.count     = 0;
+		    $scope.isRunning = false;
+
+		    var data     = Array(100000).join('x');
+                    var numOuter = 1;
+                    var numInner = 1;
+
+		    $scope.runMany = function() { 
+			$scope.isRunning = true;
+                        var start   = new Date();
+                        var runTime = 0;
+                        var count   = 0;
+                        function runInner () {
+                            console.log("in inner");
+                            var start = new Date();
+			    var promise = $q.when(true);
+                            for ( var i=0; i<numInner; i++ ) {
+			        promise = promise
+				.then(function() {
+                                    count++;
+				    return $http.put('/testajax', { string : data });
+				});
+			    }
+                            return promise.then( function () { runTime += ( new Date() - start ); } );
+                        }
+                        function delayit () {
+                            var defer = $q.defer();
+                            setTimeout( function () { console.log("next"); defer.resolve(); }, 500 );
+                            return defer.promise;
+                        }
+
+                        var promise = $q.when(true);
+                        for ( var i=0; i<numOuter; i++ ) {
+                            promise = promise.then( runInner ).then( delayit );
+                        }
+			promise.then(function() {
+                            $scope.wallTime  = (new Date() - start)/1000;
+                            $scope.count     = count;
+                            $scope.runTime   = runTime/1000;
+			    $scope.isRunning = false;
+			});
+		    }
+		});
+  </script>
+</head>
+<body ng-app="myApp">
+  <div ng-controller="myCtrl" style="position: relative">
+    <button ng-click="runOne()">Run one</button>
+    <button ng-click="runMany()">Run many</button>
+    <p>WallTime : {{ wallTime }}</p>
+    <p>RunTime : {{ runTime }}</p>
+    <p>Number : {{ count }}</p>
+    <mng-coverup centered-vertical="true" ng-show="isRunning">
+    <h3 style="padding-left: 100px">
+      Running
+      <h3>
+    </mng-coverup>
+  </div>
+</body>
+</html>

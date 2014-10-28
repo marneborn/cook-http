@@ -28,10 +28,6 @@
     <div ng-include="'components/footer/footer.partial.html'"></div>
   </div>
   
-  <!-- Define controller for body. In this example we use only one controller for the scope of entire body. -->
-  <!-- Place a span that is going to act as a container for button rendering through script code. -->
-  <div ng-controller="OtherController"></div>
-
   <!-- Second script needed for accessing Google API (gapi.*) . It's usage will be described in controller. -->
   <script
     src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
@@ -65,6 +61,7 @@
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="components/user/googlePlusLogin.js"></script>
   <script src="components/app.js"></script>
+  <script src="components/user/login.js"></script>
   <script src="components/routes.js"></script>
   <!-- endbuild -->
 

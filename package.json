@@ -2,6 +2,7 @@
   "name": "cookhttp",
   "version": "0.0.0",
   "dependencies": {
+    "bluebird": "^2.3.6",
     "body-parser": "^1.9.0",
     "connect-redis": "^2.1.0",
     "cookie-parser": "^1.3.3",
@@ -9,16 +10,18 @@
     "express": "^4.9.5",
     "express-session": "^1.8.2",
     "extend": "^2.0.0",
+    "method-override": "^2.2.0",
     "mongodb": "^1.4.17",
     "morgan": "^1.3.2",
     "node-json-minify": "^0.1.3-a",
     "npmlog": "^0.1.1",
     "packetize-string": "0.0.3",
     "passport": "^0.2.1",
-    "passport-google": "^0.3.0",
+    "passport-google-oauth": "^0.1.5",
     "q": "^1.0.1",
     "redis": "^0.12.1",
     "request": "^2.45.0",
+    "rsvp": "^3.0.14",
     "serve-favicon": "^2.1.5"
   },
   "devDependencies": {
@@ -55,6 +58,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "start": "npm run-script local-server-reload",
     "test": "grunt test",
     "test-server": "node --harmony node_modules/jasmine-node/bin/jasmine-node --autoTest --watchFolders \"./lib\" server/tests",
     "local-server": "node --harmony server/server.js",

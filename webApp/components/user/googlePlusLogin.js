@@ -271,20 +271,27 @@
 			},
 			link : function (scope, element, attrs) {
 				
-				var toRender = prepToRender(getFromElementAttributes(attrs), getFromController(scope), getFromProvider(googlePlusLogin));
+				var toRender = prepToRender(
+						getFromElementAttributes(attrs),
+						getFromController(scope),
+						getFromProvider(googlePlusLogin)
+				);
 
 				toRender.callback = function ( authResult ) {
+					
 					// most of this is straight from google, but for errors connecting
 					// the authResult is an error, which googles code didn't handle
 					if ( authResult instanceof Error ) {
 						console.error("Sign in error: "+authResult.toString());
 						if ( scope.onFailCallback ) scope.onFailCallback( authResult );
 					}
+					
 					else if ( authResult['status']['signed_in']) {
 						// Update the app to reflect a signed in user
 						// Hide the sign-in button now that the user is authorized, for example:
 						if ( scope.onAuthCallback ) scope.onAuthCallback( authResult );
 					}
+					
 					else if ( authResult['error'] ){
 						// Update the app to reflect a signed out user
 						// Possible error values:

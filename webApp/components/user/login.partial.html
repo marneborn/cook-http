@@ -1,0 +1,58 @@
+<div style="width: 60%; margin: 0 auto;" ng-controller="loginController">
+
+  <button ng-click="logout()">Logout</button>
+
+  <div ng-if="loggedInUser">
+    <form>
+      <div class="btn-group-vertical" style="display: block">
+        <button class="btn btn-success" ng-click="doLogout()">
+          <i ng-if="talkingToServer" class="fa fa-spinner fa-spin"></i>
+          {{ R.String.sign_out_btn }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!loggedInUser">
+    <form>
+      <input type="text" class="form-control"
+        placeholder="{{R.String.email}}" ng-keyup="checkEmailField()"
+        mng-keypress-enter="doLogin()" ng-model="userInfo.email"
+        autofocus>
+      <input type="password" class="form-control"
+        placeholder="{{R.String.password}}"
+        mng-keypress-enter="doLogin()" ng-model="userInfo.password">
+
+      <label> <input type="checkbox"
+          ng-model="userInfo.rememberMe"> {{
+        R.String.remember_me }}
+      </label>
+      <div class="btn-group-vertical" style="display: block">
+        <button class="btn btn-success" ng-click="doLogin()">{{
+          R.String.sign_in_btn }}</button>
+        <button ng-disabled="talkingToServer" class="btn btn-primary"
+          ng-click="doCreateUser()">{{ R.String.new_user_btn }}</button>
+      </div>
+    </form>
+
+    <br>
+    <div ng-repeat="msg in messages">
+      <div class="alert alert-warning">
+        <a class="close" data-dismiss="alert"
+          ng-click="removeMessage($index)">×</a> <strong>{{
+          R.String.Error }}</strong> {{ msg }}
+      </div>
+    </div>
+  </div>
+
+  <mng-coverup ng-show="talkingToServer">
+  <div class="main-overlay-content">
+    <img src="content/images/spinner.gif" />&nbsp;&nbsp;Loading.......
+  </div>
+  </mng-coverup>
+
+</div>
+<br>
+<google-plus-login-button width="wide"></google-plus-login-button>
+<br>
+</div>
